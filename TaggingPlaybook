@@ -1,0 +1,79 @@
+- name: Get tags and tag virtual machines from VMWare
+  hosts: all
+  become: yes
+  become_method: sudo
+
+  vars_prompt:
+
+   - name: host_name
+     prompt: "what is your host address (VMWare/VSphere)?"
+     private: no
+     
+   - name: vcenter_username
+     prompt: "what is your vcenter username?"
+     private: no
+
+   - name: vcenter_password
+     prompt: "Enter password"
+     private: yes
+
+   - name: list_of_machines
+     prompt: "Please enter your list of machines"
+     private: no
+
+   - name: tag
+     prompt: "what tag do you want to add?"
+     private: no
+
+  tasks:
+
+    - name: Get info about tag
+      vmware_tag_info:
+        hostname: '{{ host_name }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        validate_certs: no
+      delegate_to: localhost
+
+    - name: Get category id from the given tag
+      vmware_tag_info:
+        hostname: '{{ host_name }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        validate_certs: no
+      delegate_to: localhost
+      register: tag_details
+    - debug:
+      msg: "{{ tag_details.tag_facts['BIS']['tag_category_id'] }}"
+
+    - name: Add tags to a virtual machine
+      vmware_tag_manager:
+        hostname: '{{ host_name }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        validate_certs: no
+        tag_names:
+          - '{{ tag }}'
+        object_name: '{{ item }}'
+        object_type: VirtualMachine
+        state: add
+      with_items: '{{ list_of_machines.split(",") }}'
+      delegate_to: localhost
+
+        #  - name: Get virtual machine info
+        # vmware_vm_info:
+        #  hostname: '{{ host_name }}'
+        # username: '{{ vcenter_username }}'
+        #  password: '{{ vcenter_password }}'
+        #        show_tag: yes
+        #  delegate_to: localhost
+        # register: vm_info
+
+        # - debug: var=vm_info
+      #    - debug:
+      #        msg: "{{ item.tags }}"
+      #      with_items:
+      #        - "{{ vm_info.virtual_machines | json_query(query) }}"
+      #      vars:
+      #        query: "[?guest_name=='IDDC4']"
+                                                                                                                    
