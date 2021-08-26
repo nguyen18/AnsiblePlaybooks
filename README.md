@@ -1,1 +1,8 @@
 # AnsiblePlaybooks
+A folder of playbooks made by me to improve effiency of tasks by automating them using Ansible. Because of my background in programming, I was able to improve my team's effiency by creating automation playbooks for tasks that would otherwise be manual. This has allowed my team to focus on more important and complicated matters rather than having to complete repetitive tasks over and over again.
+
+## How does Ansible work?
+Ansible is essentially an IT automation language that allows users to make manual tasks automated by running a **python** script to complete the necessary steps. The YAML (Yet Another Markup Language) playbooks are ran by creating a list of tasks (similar to functions in traditional programming languages) that carry out a "to-do" list of steps against another machine/server. Unlike traditional programming languages, the logic is more straight forward as the script follows the list of tasks sequentially written. Each task accesses another machine or server or ssh-ing into it and then running a python script to complete the task needed to be done.
+
+## Why Ansible?
+Because of the effiency in automation, my team decided to use Ansible to automate repetitive tasks to save time and energy. For example, because of the security protocols when working in a university, all school affiliated machines and servers must meet certain benchmarks. When creating new servers, rather than spending an hour hardening a single machine, we can run one script or multiple scripts in a matter of minutes to improve the security of a whole list of new servers/machines!
