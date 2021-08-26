@@ -5,6 +5,7 @@
   become: yes
   become_method: sudo
 
+# declaration and initialization of variables by prompting user to fill them in
   vars_prompt:
 
    - name: host_name
@@ -27,8 +28,11 @@
      prompt: "what tag do you want to add?"
      private: no
 
+# process of automating the inventory tagging process in VMWare
+
   tasks:
 
+# access tag you are adding to VM(s)
     - name: Get info about tag
       vmware_tag_info:
         hostname: '{{ host_name }}'
@@ -37,6 +41,7 @@
         validate_certs: no
       delegate_to: localhost
 
+# access the category id of the tag to attach the id to the virtual machine
     - name: Get category id from the given tag
       vmware_tag_info:
         hostname: '{{ host_name }}'
@@ -45,9 +50,8 @@
         validate_certs: no
       delegate_to: localhost
       register: tag_details
-    - debug:
-      msg: "{{ tag_details.tag_facts['BIS']['tag_category_id'] }}"
 
+# add the tag to the list of VMs using a with_items loop
     - name: Add tags to a virtual machine
       vmware_tag_manager:
         hostname: '{{ host_name }}'
@@ -61,21 +65,4 @@
         state: add
       with_items: '{{ list_of_machines.split(",") }}'
       delegate_to: localhost
-
-        #  - name: Get virtual machine info
-        # vmware_vm_info:
-        #  hostname: '{{ host_name }}'
-        # username: '{{ vcenter_username }}'
-        #  password: '{{ vcenter_password }}'
-        #        show_tag: yes
-        #  delegate_to: localhost
-        # register: vm_info
-
-        # - debug: var=vm_info
-      #    - debug:
-      #        msg: "{{ item.tags }}"
-      #      with_items:
-      #        - "{{ vm_info.virtual_machines | json_query(query) }}"
-      #      vars:
-      #        query: "[?guest_name=='IDDC4']"
                                                                                                                     
